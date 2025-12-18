@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Website</title>
+    <!-- External CSS -->
+    <link rel="stylesheet" href="quizstyle.css">
+    
+
+</head>
+<body>
+
+    <header class="header">
+        <h1 style="text-align:center; color:#2c3e50;">Quiz Website</h1>
+        <!-- inline CSS above -->
+    </header>
+
+    <main class="container">
+
+        <!-- Subject selection -->
+        <section class="subject-section">
+            <h2>Select a Subject</h2>
+            <div class="subject-grid">
+                <button class="subject-btn" data-subject="html" style="background:#3498db; color:white;">
+                    HTML
+                </button>
+                <button class="subject-btn" data-subject="css">
+                    CSS
+                </button>
+                <button class="subject-btn" data-subject="javascript">
+                    JavaScript
+                </button>
+                <button class="subject-btn" data-subject="c_language">
+                    C Language
+                </button>
+               
+                <button class="subject-btn" data-subject="java">
+                    Java
+                </button>
+                <button class="subject-btn" data-subject="python">
+                    Python
+                </button>
+           
+            </div>
+        </section>
+
+        <!-- Quiz area -->
+        <section class="quiz-section hidden" id="quizSection">
+            <div class="quiz-header">
+                <h2 id="quizTitle">Subject Quiz</h2>
+                <p id="questionCounter">Question 1 / 20</p>
+            </div>
+
+            <div class="question-box">
+                <p id="questionText">Question text will appear here</p>
+                <div id="optionsContainer" class="options-container">
+                    <!-- options created by JS -->
+                </div>
+            </div>
+
+            <div class="quiz-controls">
+                <button id="nextBtn" class="control-btn">Next</button>
+                <button id="submitBtn" class="control-btn hidden">Submit</button>
+            </div>
+
+            <div class="result-box hidden" id="resultBox">
+                <h3>Your Score</h3>
+                <p id="scoreText"></p>
+                <button id="restartBtn" class="control-btn">Restart Quiz</button>
+                <button id="backBtn" class="control-btn">Back to Subjects</button>
+            </div>
+        </section>
+
+    </main>
+
+    
+
+    <!-- Internal JavaScript at bottom of body -->
+    <script>
+        // Questions for each subject
+        // Extend each array to 20 questions for your final project.
+        const questionsData = {
+            html: [
+                {
+                    question: "Q1: HTML is mainly used to ______.",
+                    options: [
+                        "add styling to web pages",
+                        "store data in a database",
+                        "structure content on web pages",
+                        "configure network devices"
+                    ],
+                    answer: 2
+                },
+                {
+                    question: "Q2: HTML stands for ______.",
+                    options: [
+                        "Hyper Text Markup Language",
+                        "High Text Marking Language",
+                        "Hyper Transfer Markup Language",
+                        "Home Tool Markup Language"
+                    ],
+                    answer: 0
+                },
+                {
+                    question: "Q3: Which tag is used for the largest heading?",
+                    options: ["<h6>", "<head>", "<h1>", "<heading>"],
+                    answer: 2
+                },
+                {
+                    question: "Q4: Which tag is used to create a hyperlink?",
+                    options: ["<a>", "<link>", "<href>", "<url>"],
+                    answer: 0
+                },
+                {
+                    question: "Q5: Which attribute of the <a> tag specifies the link destination?",
+                    options: ["src", "href", "link", "target"],
+                    answer: 1
+                },
+                {
+                    question: "Q6: Which tag is used to insert an image in HTML?",
+                    options: ["<img>", "<image>", "<pic>", "<src>"],
+                    answer: 0
+                },
+                {
+                    question: "Q7: Which attribute of <img> provides alternative text if the image is not displayed?",
+                    options: ["title", "src", "alt", "name"],
+                    answer: 2
+                },
+                {
+                    question: "Q8: Which tag is used to create an ordered (numbered) list?",
+                    options: ["<ul>", "<ol>", "<li>", "<list>"],
+                    answer: 1
+                },
+                {
+                    question: "Q9: Which tag is used to create an unordered (bulleted) list?",
+                    options: ["<ul>", "<ol>", "<li>", "<list>"],
+                    answer: 0
+                },
+                {
+                    question: "Q10: Which tag is used to define a table row?",
+                    options: ["<tr>", "<td>", "<th>", "<row>"],
+                    answer: 0
+                },
+                {
+                    question: "Q11: Which tag is used for a table header cell?",
+                    options: ["<thead>", "<th>", "<td>", "<head>"],
+                    answer: 1
+                },
+                {
+                    question: "Q12: Which tag is used to create a line break in HTML?",
+                    options: ["<lb>", "<br>", "<break>", "<newline>"],
+                    answer: 1
+                },
+                {
+                    question: "Q13: Which tag is used to make text bold in HTML5?",
+                    options: ["<strong>", "<bold>", "<bld>", "<em>"],
+                    answer: 0
+                },
+                {
+                    question: "Q14: Which tag is used to create a text input field in a form?",
+                    options: ["<textbox>", "<input>", "<text>", "<field>"],
+                    answer: 1
+                },
+                {
+                    question: "Q15: Which attribute of the <input> tag defines the type of control (text, password, etc.)?",
+                    options: ["kind", "format", "type", "mode"],
+                    answer: 2
+                },
+                {
+                    question: "Q16: Which element is used to group and structure the main content of a page in HTML5?",
+                    options: ["<body>", "<section>", "<main>", "<content>"],
+                    answer: 2
+                },
+                {
+                    question: "Q17: Which tag is used to define a navigation section of links in HTML5?",
+                    options: ["<nav>", "<menu>", "<links>", "<navigate>"],
+                    answer: 0
+                },
+                {
+                    question: "Q18: Which tag defines a footer for a section or page in HTML5?",
+                    options: ["<bottom>", "<footer>", "<foot>", "<end>"],
+                    answer: 1
+                },
+                {
+                    question: "Q19: Where should the <title> tag be placed in a valid HTML document?",
+                    options: [
+                        "Inside the <head> section",
+                        "Inside the <body> section",
+                        "After the </html> tag",
+                        "Anywhere in the document"
+                    ],
+                    answer: 0
+                },
+                {
+                    question: "Q20: Which declaration is used at the top of an HTML5 document?",
+                    options: [
+                        "<!DOCTYPE HTML5>",
+                        "<!DOCTYPE html>",
+                        "<HTML5>",
+                        "<doctype html5>"
+                    ],
+                    answer: 1
+                }
+            ],
+
+            java: [
+                {
+                    question: "Q1: What is Java mainly used for?",
+                    options: [
+                        "Building only mobile apps",
+                        "Creating and running platform-independent programs",
+                        "Designing databases only",
+                        "Configuring computer networks"
+                    ],
+                    answer: 1
+                },
+                {
+                    question: "Q2: Which keyword is used to define a class in Java?",
+                    options: ["object", "define", "class", "new"],
+                    answer: 2
+                },
+                {
+                    question: "Q3: Which of these is NOT a Java primitive data type?",
+                    options: ["int", "boolean", "String", "double"],
+                    answer: 2
+                },
+                {
+                    question: "Q4: Which method is the entry point of a Java program?",
+                    options: [
+                        "public static void start(String[] args)",
+                        "public static void main(String[] args)",
+                        "public void run(String[] args)",
+                        "public static int main(String args)"
+                    ],
+                    answer: 1
+                },
+                {
+                    question: "Q5: Which keyword is used to create an object in Java?",
+                    options: ["allocate", "this", "new", "create"],
+                    answer: 2
+                },
+                {
+                    question: "Q6: What will be the default value of an int instance variable in a class?",
+                    options: ["0", "null", "1", "undefined"],
+                    answer: 0
+                },
+                {
+                    question: "Q7: Which symbol is used to end a statement in Java?",
+                    options: [":", ".", ";", ","],
+                    answer: 2
+                },
+                {
+                    question: "Q8: Which operator is used for equality comparison in Java?",
+                    options: ["=", "==", "===", "!="],
+                    answer: 1
+                },
+                {
+                    question: "Q9: Which control statement is used to choose one block of code from many options based on a value?",
+                    options: ["if-else", "for", "switch", "while"],
+                    answer: 2
+                },
+                {
+                    question: "Q10: Which loop is best suited when you know the exact number of iterations?",
+                    options: ["for loop", "while loop", "do-while loop", "enhanced for loop cannot be used"],
+                    answer: 0
+                },
+                {
+                    question: "Q11: What is an array in Java?",
+                    options: [
+                        "A class that can hold only strings",
+                        "A variable that holds a fixed-size sequence of values of the same type",
+                        "A special method that returns multiple values",
+                        "A keyword used to create objects"
+                    ],
+                    answer: 1
+                },
+                {
+                    question: "Q12: Which index is the first element of an array in Java?",
+                    options: ["-1", "0", "1", "Depends on JVM"],
+                    answer: 1
+                },
+                {
+                    question: "Q13: Which concept allows a class to inherit properties and methods from another class?",
+                    options: ["Encapsulation", "Polymorphism", "Inheritance", "Abstraction"],
+                    answer: 2
+                },
+                {
+                    question: "Q14: Which keyword is used to inherit a class in Java?",
+                    options: ["implements", "extends", "inherits", "instanceof"],
+                    answer: 1
+                },
+                {
+                    question: "Q15: Which access modifier makes a member visible only within the same class?",
+                    options: ["public", "protected", "private", "default"],
+                    answer: 2
+                },
+                {
+                    question: "Q16: What is method overloading?",
+                    options: [
+                        "Using the same method name with different parameter lists in the same class",
+                        "Using the same method name in a subclass with the same signature",
+                        "Calling a method from another class",
+                        "Declaring a method as static and final"
+                    ],
+                    answer: 0
+                },
+                {
+                    question: "Q17: Which keyword is used to handle exceptions in Java?",
+                    options: ["try", "catch", "throw", "All of the above"],
+                    answer: 3
+                },
+                {
+                    question: "Q18: What happens if an exception is not handled in Java?",
+                    options: [
+                        "The program ignores it and continues",
+                        "The program stops with a runtime error message",
+                        "The exception is automatically fixed",
+                        "The compiler changes it to a warning"
+                    ],
+                    answer: 1
+                },
+                {
+                    question: "Q19: Which of these is true about the 'this' keyword?",
+                    options: [
+                        "It refers to the current object",
+                        "It refers to the parent class",
+                        "It refers to the static context",
+                        "It is used only inside static methods"
+                    ],
+                    answer: 0
+                },
+                {
+                    question: "Q20: Which statement is true about Java?",
+                    options: [
+                        "Java programs can run only on Windows",
+                        "Java is purely a procedural language",
+                        "Java code is compiled to bytecode that runs on the JVM",
+                        "Java does not support object-oriented programming"
+                    ],
+                    answer: 2
+                }
+            ],
+                    c_language: [
+                {
+                    question: "Q1: C is best described as a ______ language.",
+                    options: [
+                        "high-level, structured programming",
+                        "purely object-oriented",
+                        "markup",
+                        "machine-dependent assembly only"
+                    ],
+                    answer: 0
+                },
+                {
+                    question: "Q2: Which file extension is commonly used for a C source file?",
+                    options: [".java", ".c", ".cpp", ".py"],
+                    answer: 1
+                },
+                {
+                    question: "Q3: Which function is the entry point of a standard C program?",
+                    options: ["start()", "begin()", "main()", "run()"],
+                    answer: 2
+                },
+                {
+                    question: "Q4: Which header file is needed to use printf() and scanf()?",
+                    options: ["<math.h>", "<stdio.h>", "<stdlib.h>", "<string.h>"],
+                    answer: 1
+                },
+                {
+                    question: "Q5: Which data type is best for storing a single character in C?",
+                    options: ["int", "char", "float", "double"],
+                    answer: 1
+                },
+                {
+                    question: "Q6: What is the size of an int on most 32-bit systems?",
+                    options: ["1 byte", "2 bytes", "4 bytes", "8 bytes"],
+                    answer: 2
+                },
+                {
+                    question: "Q7: Which operator is used to access the address of a variable?",
+                    options: ["*", "&", "%", "@"],
+                    answer: 1
+                },
+                {
+                    question: "Q8: What does the '++i' expression do?",
+                    options: [
+                        "Decrements i then uses it",
+                        "Uses i then increments it",
+                        "Increments i then uses it",
+                        "Resets i to zero"
+                    ],
+                    answer: 2
+                },
+                {
+                    question: "Q9: Which loop is guaranteed to execute its body at least once?",
+                    options: ["for loop", "while loop", "do-while loop", "All of these"],
+                    answer: 2
+                },
+                {
+                    question: "Q10: Which symbol is used to end a statement in C?",
+                    options: [":", ";", ".", ","],
+                    answer: 1
+                },
+                {
+                    question: "Q11: Which of these is a correct way to declare an integer array of 10 elements?",
+                    options: [
+                        "int a[10];",
+                        "int a(10);",
+                        "array int a[10];",
+                        "int[10] a;"
+                    ],
+                    answer: 0
+                },
+                {
+                    question: "Q12: What is the index of the first element in a C array?",
+                    options: ["-1", "0", "1", "Depends on compiler"],
+                    answer: 1
+                },
+                {
+                    question: "Q13: What is a pointer in C?",
+                    options: [
+                        "A variable that stores a memory address",
+                        "A function that returns an address",
+                        "A constant value in memory",
+                        "A special loop variable"
+                    ],
+                    answer: 0
+                },
+                {
+                    question: "Q14: Which operator is used to access the value pointed to by a pointer?",
+                    options: ["&", "*", "->", "."],
+                    answer: 1
+                },
+                {
+                    question: "Q15: Which statement is used to jump out of a loop immediately?",
+                    options: ["skip", "exit", "break", "continue"],
+                    answer: 2
+                },
+                {
+                    question: "Q16: Which keyword is used to define a constant in C?",
+                    options: ["constant", "fixed", "const", "final"],
+                    answer: 2
+                },
+                {
+                    question: "Q17: What is the correct format specifier to print an integer with printf()?",
+                    options: ["%f", "%c", "%d", "%s"],
+                    answer: 2
+                },
+                {
+                    question: "Q18: Which function is commonly used to allocate memory dynamically?",
+                    options: ["malloc()", "scan()", "open()", "alloc()"],
+                    answer: 0
+                },
+                {
+                    question: "Q19: What happens if you access an array element outside its valid range in C?",
+                    options: [
+                        "The compiler automatically fixes the index",
+                        "An exception is thrown and caught",
+                        "It leads to undefined behaviour",
+                        "The program prints an error message and continues"
+                    ],
+                    answer: 2
+                },
+                {
+                    question: "Q20: Which keyword is used to return a value from a function?",
+                    options: ["send", "return", "back", "end"],
+                    answer: 1
+                }
+            ],
+
+            css: [
+                {
+                    question: "Q1: CSS is mainly used to ______.",
+                    options: [
+                        "structure the content of a page",
+                        "style and layout HTML elements",
+                        "store data on the server",
+                        "handle database queries"
+                    ],
+                    answer: 1
+                },
+                {
+                    question: "Q2: CSS stands for ______.",
+                    options: [
+                        "Cascading Style Sheets",
+                        "Central Style System",
+                        "Creative Style Syntax",
+                        "Colorful Styling Source"
+                    ],
+                    answer: 0
+                },
+                {
+                    question: "Q3: Which HTML tag is used to link an external CSS file?",
+                    options: ["<style>", "<css>", "<link>", "<script>"],
+                    answer: 2
+                },
+                {
+                    question: "Q4: Which property is used to change the text color of an element?",
+                    options: ["font-color", "text-color", "color", "background-color"],
+                    answer: 2
+                },
+                {
+                    question: "Q5: Which property sets the background color of an element?",
+                    options: ["bg-color", "background", "background-color", "color"],
+                    answer: 2
+                },
+                {
+                    question: "Q6: Which CSS property is used to change the size of the text?",
+                    options: ["font-style", "font-size", "text-style", "text-size"],
+                    answer: 1
+                },
+                {
+                    question: "Q7: Which selector is used to select all <p> elements in a page?",
+                    options: ["#p", ".p", "p", "*p"],
+                    answer: 2
+                },
+                {
+                    question: "Q8: Which selector is used to select an element with id=\"main\"?",
+                    options: ["#main", ".main", "main", "*main"],
+                    answer: 0
+                },
+                {
+                    question: "Q9: Which selector is used to select all elements with class=\"box\"?",
+                    options: ["#box", ".box", "box", "*box"],
+                    answer: 1
+                },
+                {
+                    question: "Q10: Which property is used to add space inside the border of an element?",
+                    options: ["margin", "padding", "border", "spacing"],
+                    answer: 1
+                },
+                {
+                    question: "Q11: Which property is used to add space outside the border of an element?",
+                    options: ["margin", "padding", "border", "outline"],
+                    answer: 0
+                },
+                {
+                    question: "Q12: In the CSS box model, which of the following is the correct order from inside to outside?",
+                    options: [
+                        "margin → padding → border → content",
+                        "content → border → padding → margin",
+                        "content → padding → border → margin",
+                        "border → content → padding → margin"
+                    ],
+                    answer: 2
+                },
+                {
+                    question: "Q13: Which property is used to set the type of list marker for a list?",
+                    options: ["list-marker", "marker-type", "list-style-type", "bullet-type"],
+                    answer: 2
+                },
+                {
+                    question: "Q14: Which property controls how text is aligned inside an element?",
+                    options: ["text-align", "align-text", "content-align", "text-position"],
+                    answer: 0
+                },
+                {
+                    question: "Q15: Which value of the display property makes an element start on a new line and take the full width?",
+                    options: ["inline", "block", "inline-block", "flex"],
+                    answer: 1
+                },
+                {
+                    question: "Q16: Which property is used to change the cursor when it is over an element (for example to a hand pointer)?",
+                    options: ["mouse-style", "cursor", "pointer", "hover"],
+                    answer: 1
+                },
+                {
+                    question: "Q17: Which symbol is used to group multiple selectors that share the same style?",
+                    options: ["semicolon (;)", "comma (,)", "dot (.)", "hash (#)"],
+                    answer: 1
+                },
+                {
+                    question: "Q18: Which property is used to set the thickness, style, and color of a border?",
+                    options: ["border-style", "border", "border-lines", "box-border"],
+                    answer: 1
+                },
+                {
+                    question: "Q19: Which CSS property is used to control whether an element is visible or hidden but still takes up space?",
+                    options: ["display", "visibility", "opacity", "show"],
+                    answer: 1
+                },
+                {
+                    question: "Q20: Which CSS rule is correct for applying red color to all <h1> elements?",
+                    options: [
+                        "h1 { text-color: red; }",
+                        "h1 (color = red);",
+                        "h1 { color: red; }",
+                        "h1.color = red;"
+                    ],
+                    answer: 2
+                }
+            ],
+
+            javascript: [
+    {
+        question: "Q1: JavaScript is mainly used to ______ in web pages.",
+        options: [
+            "store data in a database",
+            "style HTML elements",
+            "add interactivity and dynamic behavior",
+            "configure web servers"
+        ],
+        answer: 2
+    },
+    {
+        question: "Q2: Which of the following is a correct way to declare a variable in modern JavaScript?",
+        options: ["var x;", "let x;", "const x = 10;", "All of the above"],
+        answer: 3
+    },
+    {
+        question: "Q3: Which data type is used to represent true or false values in JavaScript?",
+        options: ["number", "string", "boolean", "object"],
+        answer: 2
+    },
+    {
+        question: "Q4: Which symbol is used for strict equality comparison (checks both value and type)?",
+        options: ["==", "===", "=", "!="],
+        answer: 1
+    },
+    {
+        question: "Q5: What will be the data type of the result of the expression (5 + \"3\")?",
+        options: ["number", "string", "boolean", "undefined"],
+        answer: 1
+    },
+    {
+        question: "Q6: Which built-in function is used to display a message box in the browser?",
+        options: ["print()", "alert()", "show()", "message()"],
+        answer: 1
+    },
+    {
+        question: "Q7: Which statement is used to make a decision in JavaScript?",
+        options: ["for", "while", "if", "switch only"],
+        answer: 2
+    },
+    {
+        question: "Q8: Which loop is best when you know exactly how many times to repeat a block?",
+        options: ["for loop", "while loop", "do-while loop", "infinite loop"],
+        answer: 0
+    },
+    {
+        question: "Q9: Which keyword is used to define a function in JavaScript?",
+        options: ["func", "method", "function", "define"],
+        answer: 2
+    },
+    {
+        question: "Q10: How do you call a function named myFunc in JavaScript?",
+        options: ["call myFunc;", "myFunc();", "call(myFunc);", "run myFunc();"],
+        answer: 1
+    },
+    {
+        question: "Q11: Which object represents the current web page loaded in the browser?",
+        options: ["window", "screen", "document", "navigator"],
+        answer: 2
+    },
+    {
+        question: "Q12: Which method is used to select an element by its id in the DOM?",
+        options: [
+            "document.querySelectorAll()",
+            "document.getElementByClass()",
+            "document.getElementById()",
+            "document.getId()"
+        ],
+        answer: 2
+    },
+    {
+        question: "Q13: What will be the value of x after this code? let x = 5; x += 3;",
+        options: ["3", "5", "8", "53"],
+        answer: 2
+    },
+    {
+        question: "Q14: Which operator is used to join two strings in JavaScript?",
+        options: ["+", "&", "++", "."],
+        answer: 0
+    },
+    {
+        question: "Q15: Which keyword is used to stop a loop immediately?",
+        options: ["stop", "exit", "break", "continue"],
+        answer: 2
+    },
+    {
+        question: "Q16: What does the typeof operator do in JavaScript?",
+        options: [
+            "Changes the data type of a variable",
+            "Checks the type of a value",
+            "Declares a new variable",
+            "Converts a string to a number"
+        ],
+        answer: 1
+    },
+    {
+        question: "Q17: What is the result of the expression (true && false)?",
+        options: ["true", "false", "undefined", "null"],
+        answer: 1
+    },
+    {
+        question: "Q18: Which array method adds a new element to the end of an array?",
+        options: ["push()", "pop()", "shift()", "unshift()"],
+        answer: 0
+    },
+    {
+        question: "Q19: What happens if you try to access a variable that has not been declared?",
+        options: [
+            "The value undefined is returned without error",
+            "A ReferenceError occurs",
+            "The value null is returned",
+            "JavaScript automatically declares the variable"
+        ],
+        answer: 1
+    },
+    {
+        question: "Q20: Which statement is true about JavaScript variables?",
+        options: [
+            "A variable can hold only one type of data during its lifetime",
+            "The same variable can store different data types at different times",
+            "Variables must always be numbers",
+            "Variables must be declared with const only"
+        ],
+        answer: 1
+    }
+],
+
+           python: [
+    {
+        question: "Q1: Python is best described as a ______ language.",
+        options: [
+            "low-level assembly",
+            "high-level interpreted language",
+            "purely compiled language",
+            "markup language"
+        ],
+        answer: 1
+    },
+    {
+        question: "Q2: Which of the following is NOT a valid Python data type?",
+        options: ["int", "float", "string", "character"],
+        answer: 3
+    },
+    {
+        question: "Q3: Which symbol is used to start a single-line comment in Python?",
+        options: ["//", "#", "/*", "<!--"],
+        answer: 1
+    },
+    {
+        question: "Q4: Which of these is the correct file extension for a Python file?",
+        options: [".py", ".pt", ".pyt", ".java"],
+        answer: 0
+    },
+    {
+        question: "Q5: What will be the value of x after this code? x = 5; x = x + 2",
+        options: ["5", "7", "10", "3"],
+        answer: 1
+    },
+    {
+        question: "Q6: Which built-in function is used to get input from the user in Python 3?",
+        options: ["scan()", "input()", "read()", "get()"],
+        answer: 1
+    },
+    {
+        question: "Q7: Which of the following is a mutable data type in Python?",
+        options: ["tuple", "list", "string", "int"],
+        answer: 1
+    },
+    {
+        question: "Q8: What will be the type of variable x for this code: x = 3.5?",
+        options: ["int", "float", "str", "bool"],
+        answer: 1
+    },
+    {
+        question: "Q9: Which keyword is used to define a function in Python?",
+        options: ["func", "def", "function", "method"],
+        answer: 1
+    },
+    {
+        question: "Q10: How do you call a function named show() in Python?",
+        options: ["call show;", "show();", "run show();", "execute(show);"],
+        answer: 1
+    },
+    {
+        question: "Q11: Which statement is used to make a decision in Python?",
+        options: ["if", "loop", "switch", "case"],
+        answer: 0
+    },
+    {
+        question: "Q12: Which loop is best for iterating over items in a list directly?",
+        options: [
+            "for item in list:",
+            "while list:",
+            "for(i = 0; i < list.length; i++)",
+            "loop list:"
+        ],
+        answer: 0
+    },
+    {
+        question: "Q13: What will be the length of the list after this code? items = [1, 2]; items.append(3)",
+        options: ["1", "2", "3", "4"],
+        answer: 2
+    },
+    {
+        question: "Q14: Which method is used to remove the last element from a list?",
+        options: ["remove()", "delete()", "pop()", "cut()"],
+        answer: 2
+    },
+    {
+        question: "Q15: Which operator is used for exponentiation (power) in Python?",
+        options: ["^", "**", "pow", "^^"],
+        answer: 1
+    },
+    {
+        question: "Q16: What is the result of the expression 10 // 3 in Python?",
+        options: ["3.33", "3", "4", "3.0"],
+        answer: 1
+    },
+    {
+        question: "Q17: Which keyword is used to exit from a loop immediately in Python?",
+        options: ["exit", "stop", "break", "continue"],
+        answer: 2
+    },
+    {
+        question: "Q18: What will be the output type of the expression range(5) in Python 3 if used directly?",
+        options: ["list", "tuple", "range object", "set"],
+        answer: 2
+    },
+    {
+        question: "Q19: Which collection type stores data in key–value pairs in Python?",
+        options: ["list", "tuple", "set", "dictionary"],
+        answer: 3
+    },
+    {
+        question: "Q20: Which statement about indentation in Python is true?",
+        options: [
+            "Indentation is optional and only for readability",
+            "Indentation is used to group blocks of code",
+            "Tabs and spaces can always be mixed freely",
+            "Indentation is replaced by curly braces"
+        ],
+        answer: 1
+    }
+]
+
+           
+        };
+
+        let currentSubject = "";
+        let currentIndex = 0;
+        let score = 0;
+        let selectedOptionIndex = null;
+
+        const subjectButtons = document.querySelectorAll(".subject-btn");
+        const quizSection = document.getElementById("quizSection");
+        const quizTitle = document.getElementById("quizTitle");
+        const questionCounter = document.getElementById("questionCounter");
+        const questionText = document.getElementById("questionText");
+        const optionsContainer = document.getElementById("optionsContainer");
+        const nextBtn = document.getElementById("nextBtn");
+        const submitBtn = document.getElementById("submitBtn");
+        const resultBox = document.getElementById("resultBox");
+        const scoreText = document.getElementById("scoreText");
+        const restartBtn = document.getElementById("restartBtn");
+        const backBtn = document.getElementById("backBtn");
+
+        // Choose subject
+        subjectButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const subject = btn.getAttribute("data-subject");
+                startQuiz(subject);
+            });
+        });
+
+        function startQuiz(subject) {
+            currentSubject = subject;
+            currentIndex = 0;
+            score = 0;
+            selectedOptionIndex = null;
+
+            resultBox.classList.add("hidden");
+            quizSection.classList.remove("hidden");
+            document.querySelector(".subject-section").classList.add("hidden");
+
+            const subjectName = subject.toUpperCase().replace("_", " ");
+            quizTitle.textContent = subjectName + " Quiz";
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const subjectQuestions = questionsData[currentSubject];
+            const totalQuestions = subjectQuestions.length;
+
+            if (totalQuestions === 0) {
+                questionText.textContent = "No questions added yet for this subject.";
+                optionsContainer.innerHTML = "";
+                questionCounter.textContent = "0 / 0";
+                nextBtn.classList.add("hidden");
+                submitBtn.classList.add("hidden");
+                return;
+            }
+
+            if (currentIndex >= totalQuestions) {
+                showResult();
+                return;
+            }
+
+            questionCounter.textContent = "Question " + (currentIndex + 1) + " / " + totalQuestions;
+
+            const currentQ = subjectQuestions[currentIndex];
+
+            questionText.textContent = currentQ.question;
+            optionsContainer.innerHTML = "";
+
+            currentQ.options.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.textContent = opt;
+                btn.addEventListener("click", () => selectOption(index, btn));
+                optionsContainer.appendChild(btn);
+            });
+
+            nextBtn.classList.remove("hidden");
+            submitBtn.classList.add("hidden");
+
+            if (currentIndex === totalQuestions - 1) {
+                nextBtn.classList.add("hidden");
+                submitBtn.classList.remove("hidden");
+            }
+        }
+
+        function selectOption(index, button) {
+            selectedOptionIndex = index;
+
+            const optionButtons = document.querySelectorAll(".option-btn");
+            optionButtons.forEach(b => b.classList.remove("selected"));
+
+            button.classList.add("selected");
+        }
+
+        nextBtn.addEventListener("click", () => {
+            checkAnswer();
+            currentIndex++;
+            selectedOptionIndex = null;
+            loadQuestion();
+        });
+
+        submitBtn.addEventListener("click", () => {
+            checkAnswer();
+            showResult();
+        });
+
+        function checkAnswer() {
+            const subjectQuestions = questionsData[currentSubject];
+            const currentQ = subjectQuestions[currentIndex];
+
+            if (selectedOptionIndex === currentQ.answer) {
+                score++;
+            }
+        }
+
+        function showResult() {
+            const totalQuestions = questionsData[currentSubject].length;
+            resultBox.classList.remove("hidden");
+            scoreText.textContent = "You scored " + score + " out of " + totalQuestions + ".";
+        }
+
+        restartBtn.addEventListener("click", () => {
+            currentIndex = 0;
+            score = 0;
+            selectedOptionIndex = null;
+            resultBox.classList.add("hidden");
+            loadQuestion();
+        });
+
+        backBtn.addEventListener("click", () => {
+            quizSection.classList.add("hidden");
+            document.querySelector(".subject-section").classList.remove("hidden");
+        });
+    </script>
+
+</body>
+</html>
